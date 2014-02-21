@@ -25,21 +25,19 @@ import amo.tests
 import files
 import paypal
 from addons.models import Addon, AddonCategory, Category, Charity
-from amo.helpers import (absolutify, babel_datetime, url as url_reverse,
-                         timesince)
+from amo.helpers import url as url_reverse
+from amo.helpers import absolutify
 from amo.tests import (addon_factory, assert_no_validation_errors, formset,
                        initial)
 from amo.tests.test_helpers import get_image_path
 from amo.urlresolvers import reverse
 from applications.models import Application, AppVersion
+from devhub import tasks
 from devhub.forms import ContribForm
 from devhub.models import ActivityLog, BlogPost, SubmitStep
-from devhub import tasks
 from files.models import File, FileUpload, Platform
 from files.tests.test_models import UploadTest as BaseUploadTest
-from market.models import Refund
 from reviews.models import Review
-from stats.models import Contribution
 from translations.models import Translation
 from users.models import UserProfile
 from versions.models import ApplicationsVersions, License, Version

@@ -1,21 +1,23 @@
 # -*- coding: utf-8 -*-
 import urllib
+from decimal import Decimal
 
 from django import http, test
 from django.conf import settings
 from django.core import mail
 
-from mock import patch, Mock
+from mock import Mock, patch
 from nose.tools import eq_
 from test_utils import RequestFactory
 
 import amo.tests
-from amo.urlresolvers import reverse
 from addons.models import Addon
+from amo.urlresolvers import reverse
+from market.models import Price
+from paypal import PaypalError, views
+from paypal.decorators import handle_paypal_error
 from stats.models import Contribution
 from users.models import UserProfile
-from paypal import PaypalError
-from paypal.decorators import handle_paypal_error
 
 
 URL_ENCODED = 'application/x-www-form-urlencoded'

@@ -7,11 +7,11 @@ import time
 import traceback
 import uuid
 
+from django import forms as django_forms
 from django import http
+from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.core.files.storage import default_storage as storage
-from django.conf import settings
-from django import forms as django_forms
 from django.db import transaction
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
@@ -20,35 +20,36 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 
 import commonware.log
+import waffle
 from PIL import Image
 from session_csrf import anonymous_csrf
-from tower import ugettext_lazy as _lazy, ugettext as _
-import waffle
+from tower import ugettext as _
+from tower import ugettext_lazy as _lazy
 from waffle.decorators import waffle_switch
 
-from applications.models import Application, AppVersion
 import amo
 import amo.utils
-from amo import messages
-from amo.decorators import json_view, login_required, post_required
-from amo.helpers import absolutify, loc, urlparams
-from amo.utils import escape_all, HttpResponseSendFile, MenuItem
-from amo.urlresolvers import reverse
+import paypal
 from access import acl
 from addons import forms as addon_forms
 from addons.decorators import addon_view
 from addons.models import Addon, AddonUser
 from addons.views import BaseFilter
+from amo import messages
+from amo.decorators import json_view, login_required, post_required
+from amo.helpers import absolutify, urlparams
+from amo.urlresolvers import reverse
+from amo.utils import escape_all, HttpResponseSendFile, MenuItem
+from applications.models import Application, AppVersion
+from devhub import perf
 from devhub.decorators import dev_required
 from devhub.forms import CheckCompatibilityForm
 from devhub.models import ActivityLog, BlogPost, RssKey, SubmitStep
-from devhub import perf
-from editors.helpers import ReviewHelper, get_position
-from files.models import File, FileUpload, Platform
+from editors.helpers import get_position, ReviewHelper
+from files.models import File, FileUpload
 from files.utils import parse_addon
 from market.models import Refund
 from paypal.check import Check
-import paypal
 from search.views import BaseAjaxSearch
 from stats.models import Contribution
 from translations.models import delete_translation
@@ -57,6 +58,7 @@ from versions.models import Version
 from zadmin.models import ValidationResult
 
 from . import forms, tasks, feeds, signals
+
 
 log = commonware.log.getLogger('z.devhub')
 paypal_log = commonware.log.getLogger('z.paypal')
@@ -457,7 +459,7 @@ def _premium(request, addon_id, addon):
                        form=premium_form))
 
 
-def _voluntary(request, addon_id, addon, webapp):
+def _voluntary(request, addon_id, addon):
     charity = None if addon.charity_id == amo.FOUNDATION_ORG else addon.charity
 
     charity_form = forms.CharityForm(request.POST or None, instance=charity,
@@ -1490,7 +1492,7 @@ def submit_describe(request, addon_id, addon, step):
         return redirect(_step_url(4), addon.slug)
     return render(request, 'devhub/addons/submit/describe.html',
                   {'form': form, 'cat_form': cat_form, 'addon': addon,
-                   'step': step })
+                   'step': step})
 
 
 @dev_required
@@ -1514,7 +1516,7 @@ def submit_media(request, addon_id, addon, step):
 
     return render(request, 'devhub/addons/submit/media.html',
                   {'form': form_icon, 'addon': addon, 'step': step,
-                   'preview_form': form_previews })
+                   'preview_form': form_previews})
 
 
 @dev_required
