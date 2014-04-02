@@ -27,12 +27,12 @@ DATABASES = {}
 DATABASES['default'] = dj_database_url.parse(private.DATABASES_DEFAULT_URL)
 DATABASES['default']['OPTIONS'] = {'init_command': 'SET storage_engine=InnoDB'}
 
-DATABASES['slave'] = dj_database_url.parse(private.DATABASES_SLAVE_URL)
-DATABASES['slave']['OPTIONS'] = {'init_command': 'SET storage_engine=InnoDB'}
+# DATABASES['slave'] = dj_database_url.parse(private.DATABASES_SLAVE_URL)
+# DATABASES['slave']['OPTIONS'] = {'init_command': 'SET storage_engine=InnoDB'}
 
 SERVICES_DATABASE = dj_database_url.parse(private.SERVICES_DATABASE_URL)
 
-SLAVE_DATABASES = ['slave']
+# SLAVE_DATABASES = ['slave']
 
 CACHES = {
     'default': {

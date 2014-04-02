@@ -586,7 +586,7 @@ class FileUpload(amo.models.ModelBase):
 
     @classmethod
     def from_post(cls, chunks, filename, size):
-        fu = FileUpload.objects.create()
+        fu = FileUpload()
         fu.add_file(chunks, filename, size)
         return fu
 
