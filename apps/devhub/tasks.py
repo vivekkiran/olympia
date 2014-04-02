@@ -38,9 +38,11 @@ log = logging.getLogger('z.devhub.task')
 @task
 @write
 def validator(upload_id, **kw):
+    # Some extra space
+    # to change line numbers in tracebacks
     if not settings.VALIDATE_ADDONS:
         return None
-    log.info('VALIDATING: %s' % upload_id)
+    log.info('xx VALIDATING: %s' % upload_id)
     from django.db.transaction import get_autocommit
     log.info('Task autocommit: %s' % (get_autocommit(),))
     upload = FileUpload.objects.get(pk=upload_id)
