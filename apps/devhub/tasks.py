@@ -41,6 +41,8 @@ def validator(upload_id, **kw):
     if not settings.VALIDATE_ADDONS:
         return None
     log.info('VALIDATING: %s' % upload_id)
+    from django.db.transaction import get_autocommit
+    log.info('Task autocommit: %s' % (get_autocommit(),))
     upload = FileUpload.objects.get(pk=upload_id)
     try:
         result = run_validator(upload.path)
